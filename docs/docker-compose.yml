@@ -1,0 +1,67 @@
+version: "3.1"
+
+networks:
+  haydikodlayalim:
+
+services:
+  cassandra:
+    networks:
+      - haydikodlayalim
+    container_name: cassandra
+    restart: always
+    image: cassandra
+    ports:
+    - 9042:9042
+    volumes:
+    - E:\db\cassandra:/var/lib/cassandra
+
+  mysql:
+    networks:
+      - haydikodlayalim
+    container_name: mysql
+    image : mysql
+    restart: always
+    volumes:
+    - E:\db\mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: microservice-app
+      MYSQL_USER: microservice
+      MYSQL_PASSWORD: microservice
+    ports:
+      - '3306:3306'
+
+  elastic:
+    networks:
+      - haydikodlayalim
+    container_name: elastic
+    restart: always
+    image: elasticsearch:6.8.12
+    ports:
+    - 9200:9200
+    - 9300:9300
+    environment:
+      discovery.type: single-node
+
+  mydrive:
+    networks:
+      - haydikodlayalim
+    container_name: minio
+    image: minio/minio
+    restart: always
+    ports:
+    - 81:9000
+    environment:
+      - MINIO_ACCESS_KEY=ab266391
+      - MINIO_SECRET_KEY=ab266391
+    volumes:
+    - E:\db:/data
+    command: server /data
+
+  msrabbitmq:
+    image: rabbitmq:3-management
+    ports:
+    - '5672:5672'
+    - '15672:15672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=haydikodlayalim
+      - RABBITMQ_DEFAULT_PASS=haydikodlayalim
