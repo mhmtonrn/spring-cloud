@@ -58,6 +58,9 @@ services:
     command: server /data
 
   msrabbitmq:
+    container_name: rabbit
+    networks:
+      - haydikodlayalim
     image: rabbitmq:3-management
     ports:
     - '5672:5672'
